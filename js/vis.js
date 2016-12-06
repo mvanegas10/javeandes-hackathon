@@ -177,7 +177,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
       //   },
       //   mouseout: function (e) { info.update();},
       // });     
-    }
+    })
     });
     layer.addTo(map);
     var legend = L.control({
