@@ -1,7 +1,7 @@
 var width = 960,
-    height = 500,
+    height = 400,
     padding = 1.5, // separation between same-color nodes
-    clusterPadding = 6, // separation between different-color nodes
+    clusterPadding = 16, // separation between different-color nodes
     maxRadius = 12;
 
 var info = L.control({
@@ -9,27 +9,85 @@ var info = L.control({
     });    
 
 var n = 200, // total number of nodes
-    m = 2; // number of distinct clusters
+    m = 3; // number of distinct clusters
 
 var color = d3.scale.category10()
-    .domain(d3.range(m));
+    .range(["#66bd63","#ffffbf","#f46d43"])
+    .domain([0,1,2]);
 
 // The largest node for each cluster.
 var clusters = new Array(m);
 
 var tweets = [
-  {"texto":"grande0","valor":0.9},
-  {"texto":"pequeño0","valor":-0.9},
-  {"texto":"grande3","valor":0.1},
-  {"texto":"pequeño3","valor":-0.1},
-  {"texto":"pequeño2","valor":0.5},
-  {"texto":"grande2","valor":-0.5},
-  {"texto":"grande1","valor":0.7},
-  {"texto":"pequeño1","valor":-0.7},
+  {"text":"grande0","value":0},
+  {"text":"pequeño0","value":0},
+  {"text":"grande3","value":0},
+  {"text":"pequeño3","value":0},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"grande2","value":0},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"grande1","value":0.5},
+  {"text":"pequeño1","value":0},
+  {"text":"grande0","value":0},
+  {"text":"pequeño0","value":0},
+  {"text":"grande3","value":0},
+  {"text":"pequeño3","value":0},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"grande2","value":0},
+  {"text":"grande1","value":0.5},
+  {"text":"pequeño1","value":0},
+  {"text":"grande0","value":0},
+  {"text":"pequeño0","value":0},
+  {"text":"grande3","value":0},
+  {"text":"pequeño3","value":0},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"grande2","value":0},
+  {"text":"grande1","value":0.5},
+  {"text":"pequeño1","value":0},
+  {"text":"grande0","value":0},
+  {"text":"pequeño0","value":0},
+  {"text":"grande3","value":0},
+  {"text":"pequeño3","value":0},
+  {"text":"pequeño2","value":-0.3},
+  {"text":"grande2","value":0},
+  {"text":"grande1","value":0.5},
+  {"text":"pequeño1","value":0}      
 ];
 
+createForceChart(createNodes(tweets));
+
+
 function createForceChart(nodes) {
-  console.log(nodes);
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      console.log(d)
+      return "<span>" + d.text + "</span>";
+    })
+
   var force = d3.layout.force()
       .nodes(nodes)
       .size([width, height])
@@ -45,7 +103,9 @@ function createForceChart(nodes) {
   var node = svg.selectAll("circle")
       .data(nodes)
     .enter().append("circle")
-      .style("fill", function(d) { return color(d.cluster); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+      .style("fill", function(d) { return color(d.cluster); })      
       .call(force.drag);
 
   node.transition()
@@ -109,7 +169,7 @@ function createForceChart(nodes) {
       });
     };
   }
-
+  svg.call(tip);
 }
 
 $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){
@@ -125,7 +185,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
   //       })
   //   });           
   
-  var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.6);
+  var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.5);
     map.dragging.disable();
     map.scrollWheelZoom.disable();
   info.addTo(map);
@@ -192,21 +252,24 @@ function sendTopic(type) {
     }).then(function(data) {
       console.log(data);
       createForceChart(createNodes(data.result));
+      // createForceChart(createNodes(tweets));
   });
 }
 
 function createNodes(data) {
-  var nodes = d3.range(data.length).map(function(i) {
-    var i = (data[i].value  >= 0)? 1:0,
-      r = Math.sqrt((i + 1) / m * -Math.log(Math.abs(data[i].value))) * maxRadius,
+  var nodes = [];
+  data.forEach(function(dat) {
+    var i = (dat.value < 0)? 0: (dat.value === 0)? 1: 2,
+      r = ((dat.value) === 0)? 7: Math.sqrt((i + 1) / m * -Math.log(Math.abs(dat.value))) * maxRadius + 7,
       d = {
+        text: dat.text,
         cluster: i,
         radius: r,
         x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
         y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
       };
     if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-    return d; 
+    nodes.push(d);
   });
   return nodes;
 } 

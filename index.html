@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="https://mvanegas10.github.io/javeandes-hackathon/js/d3.tip.v0.6.3.js"></script>
   </head>
 <body>
   <div class="row">
@@ -24,11 +25,12 @@
       <div class="row" ng-controller="selectionController as selCtrl">
         <div ng-repeat="type in ['Salud', 'Ministerio de Salud', 'Enfermedad']"><p ng-click="selCtrl.getTweets(type)">{{type}}</p></div>
       </div>
-      <div class="row" id="forceChart" style="height:500"></div>
+      <div class="row" id="forceChart" style="height:400px"></div>
     </div>
     <div class="col-md-2"></div>
   </div>
   <div class="row">
-    <div class="col-md-6" id="map" style="height:600px"></div>  
+    <div class="col-md-6" id="map" style="height:800px"></div>  
   <script src="https://mvanegas10.github.io/javeandes-hackathon/js/vis.js"></script>
+  <!--<script src="/js/vis.js"></script>-->
 </body>
