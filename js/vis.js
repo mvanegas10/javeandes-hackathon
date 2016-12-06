@@ -4,6 +4,10 @@ var width = 960,
     clusterPadding = 6, // separation between different-color nodes
     maxRadius = 12;
 
+var info = L.control({
+      position: 'topleft'
+    });    
+
 var n = 200, // total number of nodes
     m = 2; // number of distinct clusters
 
@@ -124,6 +128,76 @@ function createForceChart(nodes) {
 
 }
 
+$.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){
+  // colombia.features.forEach(function(d){
+  //     departamentos.forEach(function (e){
+  //         if(e.Departamento.toUpperCase().indexOf(d.properties.NOMBRE_DPT) !== -1){
+  //           d.properties.indicators = {};
+  //           for (key in e) {
+  //             if (key !== "Departamento") d.properties.indicators[key] = + e[key];
+  //             else d.properties.indicators[key] = e[key];
+  //           }
+  //         }
+  //       })
+  //   });           
+  
+  var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.6);
+    map.dragging.disable();
+    map.scrollWheelZoom.disable();
+  info.addTo(map);
+  var layer = L.geoJson(colombia, {
+    clickable: true,
+    style: function(feature) {
+          return {
+            stroke: true,
+            color: "#0d174e",
+            weight: 1,
+            fill: true,
+            fillColor: "green",
+            fillOpacity: 1
+          };
+      },
+    onEachFeature: function (feature, layer) {
+      layer.on({
+        click: function(e) {
+          console.log(e); 
+          // var depto = e.target.feature.properties.indicators.Departamento;
+          // var dataMatrix = departamentos_results.filter(function (d) {
+          //   if (d.Departamento === depto) return d;
+          // });
+          // createMatrix(depto, dataMatrix, svg1, x1, y1, z1);
+          // updateLabels(svg1,[]);
+          // var newData = scatterplot.filter(function (e) {
+          //   if (e.Departamento === depto) return e;
+          // });
+          // createScatterplot(newData, "PorcentajeNo", "PorcentajeOscarIvanZuluagaSegundaVuelta", x2, y2, z2);
+          // console.log(e);
+          },
+      //   mouseover: function (e) { 
+      //   },
+      //   mouseout: function (e) { info.update();},
+      // });     
+    }
+    });
+    layer.addTo(map);
+    var legend = L.control({
+      position: 'bottomright'
+    });
+    // legend.onAdd = function() {
+    //   var div = L.DomUtil.create('div', 'legend'),
+    //     values = [1,0.5,0,-0.5,-1];
+    //     labels = ["Sí","","Empate","","No"];
+    //   div.innerHTML += 'Resultado plebiscito<br>';
+    //   for (var i = 0; i < values.length; i++) {
+    //     div.innerHTML +=
+    //       '<i style="background:' + "black" + '"></i> '+ labels[i] + '<br>';
+    //   }
+    //   return div;
+    // };
+  legend.addTo(map);
+  }
+);
+
 // Get to get the topic
 function sendTopic(type) {
   console.log("Ask for " + type);
@@ -136,6 +210,21 @@ function sendTopic(type) {
       createForceChart(createNodes(data));
   });
 }
+
+info.onAdd = function(map) {
+    this._div = L.DomUtil.create('div', 'info'); // --> info refers to the CSS style to apply to the new object
+    this.update();
+    return this._div;
+};
+
+info.update = function(props) {
+    var infoString = '<h4> Datos </h4>';
+    for (var item in props) {
+        infoString += '<b>' + item + '</b> ' + props[item] + '</b> <br />';
+    }
+
+    this._div.innerHTML = infoString;
+};
 
 // ------------------------------------------ //
 // --------------  ANGULAR  ----------------- //
