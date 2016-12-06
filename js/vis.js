@@ -133,19 +133,10 @@ function createForceChart(nodes) {
   svg.call(tip);
 }
 
-$.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){
-  // colombia.features.forEach(function(d){
-  //     departamentos.forEach(function (e){
-  //         if(e.Departamento.toUpperCase().indexOf(d.properties.NOMBRE_DPT) !== -1){
-  //           d.properties.indicators = {};
-  //           for (key in e) {
-  //             if (key !== "Departamento") d.properties.indicators[key] = + e[key];
-  //             else d.properties.indicators[key] = e[key];
-  //           }
-  //         }
-  //       })
-    // });           
-  
+$.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){  
+  colombia.features.forEach(function (d) {
+    d.properties.indicator = Math.random();
+  })
   var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.5);
     map.dragging.disable();
     map.scrollWheelZoom.disable();
@@ -159,34 +150,40 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
         color: "#0d174e",
         weight: 1,
         fill: true,
-        fillColor: setColor(),
+        fillColor: setColor(feature.properties.indicator),
         fillOpacity: 1
       };
     },
     onEachFeature: function (feature, layer) {
       layer.on({
-        mouseover: function(d) {console.log("inside " + d)},
-        mouseout: function(d) {console.log("outside " + d)},
-        click: function(d) {console.log("click " + d)}
-      });
+        mouseover: function(d) {
+          info.update({"Departamento": d.target.feature.properties.NOMBRE_DPT, "Indicador": Math.round(d.target.feature.properties.indicator*100)/100});
+        },
+        mouseout: function(d) {
+          info.update({"":""});
+        }        
+      })
     }
-  }).addTo(map);
+}).addTo(map);
 });
 
 // Get to get the topic
 function sendTopic(type) {
-  console.log("Ask for " + type);
-  $.ajax({
-    type: "POST",
-    data: "{\"word\":\"" + type + "\"}",
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    url: "http://pyjaveandes.mybluemix.net/get_tweets"
-    }).then(function(data) {  
-      console.log(data);
-      createForceChart(createNodes(data.result));
-      // createForceChart(createNodes(tweets));
-  });
+  if (type === "tweets") createForceChart(createNodes(tweets));
+  else {
+    console.log("Ask for " + type);
+    $.ajax({
+      type: "POST",
+      data: "{\"word\":\"" + type + "\"}",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      url: "http://pyjaveandes.mybluemix.net/get_tweets"
+      }).then(function(data) {  
+        console.log(data);
+        createForceChart(createNodes(data.result));
+        // createForceChart(createNodes(tweets));
+    });
+  }
 }
 
 function createNodes(data) {
@@ -211,30 +208,16 @@ function createNodes(data) {
   return nodes;
 } 
 
-function setColor() {
-  var rnd = Math.random();
-
-  var color2 = d3.scale.category20()
-    .range(["#b58949",
-"#fbbd13",
-"#6b4c33",
-"#f47d0d",
-"#a28b6e",
-"#7f6807",
-"#e7a941",
-"#9b6212",
-"#dab953",
-"#b5753e",
-"#ba8d1e",
-"#d2ae75",
-"#c47f2a",
-"#a18623",
-"#de9e63",
-"#a27521",
-"#e8aa59",
-"#bf8f3b"]);
-    console.log(color2(Math.floor(rnd*40)))
-    return color2(Math.floor(rnd*40));
+function setColor(indicator) {
+  if (indicator < 0.1) return "#fff7f3";  
+  else if (indicator < 0.2) return "#fde0dd";  
+  else if (indicator < 0.3) return "#fcc5c0";  
+  else if (indicator < 0.4) return "#fa9fb5";  
+  else if (indicator < 0.5) return "#f768a1";  
+  else if (indicator < 0.6) return "#dd3497";  
+  else if (indicator < 0.7) return "#ae017e";  
+  else if (indicator < 0.8) return "#7a0177";  
+  else if (indicator < 0.9) return "#49006a";  
 }
 
 info.onAdd = function(map) {
@@ -262,10 +245,18 @@ info.update = function(props) {
   app.controller('selectionController', function(){
     var _this = this;
     _this.selection;
+    _this.options = [
+      {"id":0,"name":"tweets"},
+      {"id":0,"name":"Salud"},
+      {"id":1,"name":"Enfermedad"},
+      {"id":2,"name":"EPS"},
+      {"id":3,"name":"Ministerio de Salud"}
+    ];
     _this.getTweets = getTweets;
 
-    function getTweets(type){
-      sendTopic(type);
+    function getTweets(){
+      console.log("Selected: " + _this.selection);
+      sendTopic(_this.selection);
     }
   });
 })();

@@ -19,19 +19,22 @@
       <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-          <h1>Visualización de estadísticas de salud</h1>
+          <h1>Visualización de estadísticos de salud</h1>
         </div>
         <div class="col-md-2"></div>
       </div>
-      <div class="row" ng-controller="selectionController as selCtrl">
-        <div ng-repeat="type in ['Salud', 'Ministerio de Salud', 'Enfermedad']"><p ng-click="selCtrl.getTweets(type)">{{type}}</p></div>
+      <div class="row"><h3>Seleccione una palabra de interés</h3></div>      
+      <div class="row" ng-controller="selectionController as selCtrl" style="text-align:center;">
+        <select ng-model="selCtrl.selection" ng-change="selCtrl.getTweets(option.name)">
+          <option ng-repeat="option in selCtrl.options" value="{{option.name}}">{{option.name}}</option>
+        </select>
       </div>
-      <div class="row" id="forceChart" style="height:400px"></div>
+      <div class="row" id="forceChart" style="height:300px"></div>
     </div>
     <div class="col-md-2"></div>
   </div>
   <div class="row">
-    <div class="col-md-6" id="map" style="height:800px"></div>  
+    <div class="col-md-6" id="map" style="width:500px;height:800px;left:1cm;"></div>  
   <script src="https://mvanegas10.github.io/javeandes-hackathon/js/vis.js"></script>
   <!--<script src="/js/vis.js"></script>-->
 </body>
