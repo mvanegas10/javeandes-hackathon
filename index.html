@@ -22,20 +22,24 @@
     </div>
     <div class="col-md-2"></div>
   </div>
-  <div class="row"><h3>Seleccione una palabra de interés</h3></div>      
+  <div class="row"><h2>Seleccione una palabra de interés</h2></div>      
   <div class="row" ng-controller="selectionController as selCtrl" style="text-align:center;">
     <select ng-model="selCtrl.selection" ng-change="selCtrl.getTweets(option.name)">
       <option ng-repeat="option in selCtrl.options" value="{{option.name}}">{{option.name}}</option>
     </select>
   </div>
   <div class="row">
+    <div class="col-md-3"></div>
     <div class="col-md-6" id="forceChart" style="height:300px;left:1cm;"></div>
-    <div class="col-md-6" id="chart" style="height:300px;right:1cm;"></div>
+    <div class="col-md-3"></div>
   </div>
   <div class="row">
-    <div class="col-md-3"></div>  
-    <div class="col-md-6" id="map" style="height:800px;left:1cm;"></div>  
-    <div class="col-md-3"></div>      
+    <div class="col-md-6"><h2>Gráfica de descriptores</h2></div>
+    <div class="col-md-6"><h2>Mapa</h2></div>  
+  </div>  
+  <div class="row">
+    <div class="col-md-6" id="chart" style="top: 5cm;height:300px;width:650px;left:2cm;"></div>
+    <div class="col-md-6" id="map" style="height:800px;left:3cm;width:700px;"></div>  
   </div>
   <script src="https://mvanegas10.github.io/javeandes-hackathon/js/vis.js"></script>
   <!--<script src="/js/vis.js"></script>-->

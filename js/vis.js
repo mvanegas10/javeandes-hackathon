@@ -1,4 +1,4 @@
-var width = 500,
+var width = 650,
     height = 300,
     padding = 1.5, // separation between same-color nodes
     clusterPadding = 16, // separation between different-color nodes
@@ -17,6 +17,78 @@ var color = d3.scale.category10()
 
 // The largest node for each cluster.
 var clusters = new Array(m);
+
+var indicadores = [];
+
+var words = [
+  {"id":"Cáncer","nombre":"Edad","valor":0.29},
+  {"id":"Cáncer","nombre":"Peso","valor":0.23},
+  {"id":"Cáncer","nombre":"Ejercicio fuerte","valor":0.20},
+  {"id":"Cáncer","nombre":"Dolor general","valor":0.12},
+  {"id":"Cáncer","nombre":"Hombre","valor":0.16},
+  {"id":"Corazón","nombre":"Problema de pie","valor":0.32},
+  {"id":"Corazón","nombre":"Problema de aprendizaje","valor":0.29},
+  {"id":"Corazón","nombre":"Problema de caminata larga","valor":0.25},
+  {"id":"Corazón","nombre":"Dolor de Espalda","valor":0.10},
+  {"id":"Corazón","nombre":"Tranporte saludable","valor":0.04},
+  {"id":"Diabetes","nombre":"Glicemia","valor":0.41},
+  {"id":"Diabetes","nombre":"Nivel educativo","valor":0.23},
+  {"id":"Diabetes","nombre":"Edad","valor":0.19},
+  {"id":"Diabetes","nombre":"Presión diastólica","valor":0.10},
+  {"id":"Diabetes","nombre":"Recolecciópn de basura","valor":0.08},
+  {"id":"Trombósis","nombre":"Edad","valor":0.34},
+  {"id":"Trombósis","nombre":"Problema de caminata larga","valor":0.25},
+  {"id":"Trombósis","nombre":"Presión sistólica","valor":0.16},
+  {"id":"Trombósis","nombre":"Presión diastólica","valor":0.13},
+  {"id":"Trombósis","nombre":"Nivel educativo","valor":0.11},
+  {"id":"Sida","nombre":"Colesterol","valor":0.38},
+  {"id":"Sida","nombre":"Problemas de aprendizaje","valor":0.23},
+  {"id":"Sida","nombre":"Levantar objetos pesados","valor":0.16},
+  {"id":"Sida","nombre":"Colestrerol no HDL","valor":0.12},
+  {"id":"Sida","nombre":"Trigricéridos altos","valor":0.11}
+]
+
+var results = [
+  {"id":"tweets",
+  "objeto":[
+    {"nombre":"edad","valor":0.29},
+    {"nombre":"peso","valor":0.23},
+    {"nombre":"ejercicio fuerte","valor":0.20},
+    {"nombre":"dolor general","valor":0.12},
+    {"nombre":"hombre","valor":0.16}]},
+  {"id":"Cáncer",
+  "objeto":[
+    {"nombre":"edad","valor":0.29},
+    {"nombre":"peso","valor":0.23},
+    {"nombre":"ejercicio fuerte","valor":0.20},
+    {"nombre":"dolor general","valor":0.12},
+    {"nombre":"hombre","valor":0.16}]},
+  {"id":"Corazón",
+  "objeto":[
+    {"nombre":"problema de pie","valor":0.32},
+    {"nombre":"problema de aprendizaje","valor":0.29},
+    {"nombre":"problema de caminata larga","valor":0.25},
+    {"nombre":"dolor de espalda","valor":0.10},
+    {"nombre":"tranporte saludable","valor":0.04}]},
+  {"id":"Diabetes","objeto":[
+    {"nombre":"glicemia","valor":0.41},
+    {"nombre":"nivel educativo","valor":0.23},
+    {"nombre":"edad","valor":0.19},
+    {"nombre":"presión diastólica","valor":0.10},
+    {"nombre":"recolecciópn de basura","valor":0.08}]},
+  {"id":"Trombósis","objeto":[
+    {"nombre":"edad","valor":0.34},
+    {"nombre":"problema de caminata larga","valor":0.25},
+    {"nombre":"presión sistólica","valor":0.16},
+    {"nombre":"presión diastólica","valor":0.13},
+    {"nombre":"nivel educativo","valor":0.11}]},
+  {"id":"Sida","objeto":[
+    {"nombre":"colesterol","valor":0.38},
+    {"nombre":"problemas de aprendizaje","valor":0.23},
+    {"nombre":"levantar objetos pesados","valor":0.16},
+    {"nombre":"colestrerol no HDL","valor":0.12},
+    {"nombre":"trigricéridos altos","valor":0.11}]
+  }];
 
 var tweets = [
   {"text":"grande0","score":0},
@@ -39,7 +111,7 @@ var tweets = [
 ];
 
 createForceChart(createNodes(tweets));
-
+createBarChart("tweets");
 
 function createForceChart(nodes) {
   var tip = d3.tip()
@@ -134,27 +206,112 @@ function createForceChart(nodes) {
 }
 
 function createBarChart(id) {
-  var chart = c3.generate({
-    bindto: '#chart',
-    data: {
+  var x = [];
+  var columns = [];
+  results.forEach(function(d) {
+    if (d.id.toLowerCase() === id.toLowerCase()) {
+      x = d.objeto.map(function(i) {return i.nombre;});
+      columns = d.objeto.map(function(i) {return i.valor;});
+    }
+  });
+
+  if (x.length === 0) {
+    words.forEach(function (d) {
+      var val = d.nombre.split(" ");
+      val.forEach(function (value) {
+        if (value.toLowerCase() == id.toLowerCase()) {
+          results.forEach(function(h) {
+            if (h.id.toLowerCase() === d.id.toLowerCase()) {
+              x = h.objeto.map(function(i) {return i.nombre;});
+              columns = h.objeto.map(function(i) {return i.valor;});
+            }
+          });        }
+      })
+    });
+  }
+
+  columns.unshift("Peso de descriptor");
+
+  console.log(x);
+  console.log(columns);  
+
+  if (x.length > 1) {
+    var chart = c3.generate({
+      bindto: '#chart',
+      data: {
         columns: [
-            ['data1', 30, 200, 100, 400, 150, 250],
-            ['data2', 130, 100, 140, 200, 150, 50]
+          columns,
         ],
         type: 'bar'
-    },
-    bar: {
-        width: {
-            ratio: 0.5 // this makes bar width 50% of length between ticks
-        }
-        // or
-        //width: 100 // this makes bar width 100px
-    }
-});
+      },
+      axis: {
+          x: {
+            label: "Descriptor",
+            type: 'category',
+            categories: x,
+          },
+          y: {
+            label: "Peso del descriptor",
+          }          
+      },      
+      bar: {
+          width: {
+              ratio: 0.5 
+          }
+      },
+      legend: {
+          show: false
+      },
+      colors: {
+        "Peso de descriptor": '#1d91c0',
+      },      
+    });    
+  }
 }
+
+d3.csv("https://mvanegas10.github.io/javeandes-hackathon/docs/indicadores.csv", function(err, data) {
+  if(err) {
+    console.err(err);    
+  return;
+  }
+
+  var var1 = {};
+  var var2 = {};
+
+  data.forEach(function (item) {    
+    item.Variable1 = item.Variable1.trim();   
+    item.Variable2 = item.Variable2.trim(); 
+    var1[item.Variable1] = true;
+    var2[item.Variable2] = true;      
+    item.pendiente =+ item.pendiente;
+    item.intercepto =+ item.intercepto;
+    item.pearson =+ item.pearson;
+  });
+  
+  comparadores = Object.keys(var1);
+  variables = Object.keys(var2);
+
+  data.forEach(function (item) {
+    for (var i = 0; i < comparadores.length; i++) {
+      if (comparadores[i] === item.Variable1) {
+        item.posY = i;        
+      }
+    }
+    for (var i = 0; i < variables.length; i++) {
+      if (variables[i] === item.Variable2) {
+        item.posX = i;
+      }
+    }
+  });
+
+  correlation = data;
+  createMatrix(undefined, correlation, svg1, x1, y1, z1);
+});
 
 $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){  
   colombia.features.forEach(function (d) {
+
+
     d.properties.indicator = Math.random();
   })
   var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.5);
@@ -191,21 +348,20 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
 function sendTopic(type) {
   if (type === "tweets") {
     createForceChart(createNodes(tweets));
-    createBarChart("type");
+    createBarChart("tweets");
   }
   else {
     console.log("Ask for " + type);
     createBarChart(type);
     $.ajax({
       type: "POST",
-      data: "{\"word\":\"" + type + "\"}",
+      data: "{\"word\":\"" + type.toLowerCase() + "\"}",
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       url: "http://pyjaveandes.mybluemix.net/get_tweets"
       }).then(function(data) {  
         console.log(data);
         createForceChart(createNodes(data.result));        
-        // createForceChart(createNodes(tweets));
     });
   }
 }
@@ -215,7 +371,7 @@ function createNodes(data) {
   data.forEach(function(dat) {
     dat.score = + dat.score;
     var i = (dat.score < 0)? 0: (dat.score === 0)? 1: 2,
-      r = ((dat.score) === 0)? 7: Math.sqrt((i + 1) / m * -Math.log(Math.abs(dat.score))) * maxRadius + 7,
+      r = ((dat.score) === 0)? 10: Math.sqrt((i + 1) / m * -Math.log(Math.abs(dat.score))) * maxRadius + 10,
       d = {
         text: dat.text,
         cluster: i,
@@ -268,12 +424,9 @@ info.update = function(props) {
 
   app.controller('selectionController', function(){
     var _this = this;
-    _this.selection;
+    _this.selection = "tweets";
     _this.options = [
       {"id":0,"name":"tweets"},
-      {"id":0,"name":"Salud"},
-      {"id":0,"name":"EPS"},
-      {"id":0,"name":"IPS"},
       {"id":0,"name":"Edad"},
       {"id":1,"name":"Peso"},
       {"id":2,"name":"Ejercicio"},
@@ -284,6 +437,11 @@ info.update = function(props) {
       {"id":3,"name":"Basura"},
       {"id":3,"name":"Presión"},
       {"id":3,"name":"Colesterol"},
+      {"id":3,"name":"Cáncer"},
+      {"id":3,"name":"Corazón"},
+      {"id":3,"name":"Diabetes"},
+      {"id":3,"name":"Trombosis"},
+      {"id":3,"name":"Sida"},
     ];
     _this.getTweets = getTweets;
 
