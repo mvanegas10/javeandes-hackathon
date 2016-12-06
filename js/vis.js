@@ -285,6 +285,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
       if (d.properties.NOMBRE_DPT.toLowerCase() === value.departamento.toLowerCase()) {
         d.properties.indicator = value.valor;
       }
+      else if (d.properties.NOMBRE_DPT.toLowerCase() === "CAQUETA") d.properties.indicator = 7.4;
     })
   })
 
