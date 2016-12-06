@@ -6,35 +6,37 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://mvanegas10.github.io/javeandes-hackathon/css/style.css">
     <link rel="stylesheet" href="https://mvanegas10.github.io/javeandes-hackathon/css/leaflet.css">
+    <link href="https://mvanegas10.github.io/javeandes-hackathon/js/c3/c3.css" rel="stylesheet" type="text/css">
     <script src="https://mvanegas10.github.io/javeandes-hackathon/js/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="https://mvanegas10.github.io/javeandes-hackathon/js/c3/c3.min.js"></script>
     <script src="https://mvanegas10.github.io/javeandes-hackathon/js/d3.tip.v0.6.3.js"></script>
   </head>
 <body>
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-      <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-          <h1>Visualización de estadísticos de salud</h1>
-        </div>
-        <div class="col-md-2"></div>
-      </div>
-      <div class="row"><h3>Seleccione una palabra de interés</h3></div>      
-      <div class="row" ng-controller="selectionController as selCtrl" style="text-align:center;">
-        <select ng-model="selCtrl.selection" ng-change="selCtrl.getTweets(option.name)">
-          <option ng-repeat="option in selCtrl.options" value="{{option.name}}">{{option.name}}</option>
-        </select>
-      </div>
-      <div class="row" id="forceChart" style="height:300px"></div>
+      <div class="row"><div class="col-md-12"><h1>Visualización de estadísticos de salud</h1></div></div>
     </div>
     <div class="col-md-2"></div>
   </div>
+  <div class="row"><h3>Seleccione una palabra de interés</h3></div>      
+  <div class="row" ng-controller="selectionController as selCtrl" style="text-align:center;">
+    <select ng-model="selCtrl.selection" ng-change="selCtrl.getTweets(option.name)">
+      <option ng-repeat="option in selCtrl.options" value="{{option.name}}">{{option.name}}</option>
+    </select>
+  </div>
   <div class="row">
-    <div class="col-md-6" id="map" style="width:500px;height:800px;left:1cm;"></div>  
-  <script src="https://mvanegas10.github.io/javeandes-hackathon/js/vis.js"></script>
-  <!--<script src="/js/vis.js"></script>-->
+    <div class="col-md-6" id="forceChart" style="height:300px;left:1cm;"></div>
+    <div class="col-md-6" id="chart" style="height:300px;right:1cm;"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-3"></div>  
+    <div class="col-md-6" id="map" style="height:800px;left:1cm;"></div>  
+    <div class="col-md-3"></div>      
+  </div>
+  <!--<script src="https://mvanegas10.github.io/javeandes-hackathon/js/vis.js"></script>-->
+  <script src="/js/vis.js"></script>
 </body>

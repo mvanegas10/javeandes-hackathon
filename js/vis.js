@@ -1,5 +1,5 @@
-var width = 960,
-    height = 400,
+var width = 500,
+    height = 300,
     padding = 1.5, // separation between same-color nodes
     clusterPadding = 16, // separation between different-color nodes
     maxRadius = 12;
@@ -133,6 +133,26 @@ function createForceChart(nodes) {
   svg.call(tip);
 }
 
+function createBarChart(id) {
+  var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+        columns: [
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 130, 100, 140, 200, 150, 50]
+        ],
+        type: 'bar'
+    },
+    bar: {
+        width: {
+            ratio: 0.5 // this makes bar width 50% of length between ticks
+        }
+        // or
+        //width: 100 // this makes bar width 100px
+    }
+});
+}
+
 $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){  
   colombia.features.forEach(function (d) {
     d.properties.indicator = Math.random();
@@ -169,9 +189,13 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
 
 // Get to get the topic
 function sendTopic(type) {
-  if (type === "tweets") createForceChart(createNodes(tweets));
+  if (type === "tweets") {
+    createForceChart(createNodes(tweets));
+    createBarChart("type");
+  }
   else {
     console.log("Ask for " + type);
+    createBarChart(type);
     $.ajax({
       type: "POST",
       data: "{\"word\":\"" + type + "\"}",
@@ -180,7 +204,7 @@ function sendTopic(type) {
       url: "http://pyjaveandes.mybluemix.net/get_tweets"
       }).then(function(data) {  
         console.log(data);
-        createForceChart(createNodes(data.result));
+        createForceChart(createNodes(data.result));        
         // createForceChart(createNodes(tweets));
     });
   }
@@ -248,9 +272,18 @@ info.update = function(props) {
     _this.options = [
       {"id":0,"name":"tweets"},
       {"id":0,"name":"Salud"},
-      {"id":1,"name":"Enfermedad"},
-      {"id":2,"name":"EPS"},
-      {"id":3,"name":"Ministerio de Salud"}
+      {"id":0,"name":"EPS"},
+      {"id":0,"name":"IPS"},
+      {"id":0,"name":"Edad"},
+      {"id":1,"name":"Peso"},
+      {"id":2,"name":"Ejercicio"},
+      {"id":3,"name":"Dolor"},
+      {"id":3,"name":"Espalda"},
+      {"id":3,"name":"Transporte"},
+      {"id":3,"name":"Glicemia"},
+      {"id":3,"name":"Basura"},
+      {"id":3,"name":"Presión"},
+      {"id":3,"name":"Colesterol"},
     ];
     _this.getTweets = getTweets;
 
