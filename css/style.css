@@ -38,3 +38,6 @@ p {
   padding: 0cm 0cm 0cm 0cm;
   text-align:center; 
 }
+tspan {
+  font-size: 12px; 
+}

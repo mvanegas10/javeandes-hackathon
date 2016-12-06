@@ -5,7 +5,7 @@ var width = 650,
     maxRadius = 12;
 
 var info = L.control({
-      position: 'topleft'
+      position: 'topright'
     });    
 
 var n = 200, // total number of nodes
@@ -285,7 +285,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
       if (d.properties.NOMBRE_DPT.toLowerCase() === value.departamento.toLowerCase()) {
         d.properties.indicator = value.valor;
       }
-      else if (d.properties.NOMBRE_DPT.toLowerCase() === "CAQUETA") d.properties.indicator = 7.4;
+      else if (d.properties.NOMBRE_DPT.toLowerCase() == "CAQUETA") d.properties.indicator = 7.4;
     })
   })
 
