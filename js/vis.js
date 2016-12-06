@@ -275,37 +275,9 @@ d3.csv("https://mvanegas10.github.io/javeandes-hackathon/docs/indicadores.csv", 
   return;
   }
 
-  var var1 = {};
-  var var2 = {};
-
-  data.forEach(function (item) {    
-    item.Variable1 = item.Variable1.trim();   
-    item.Variable2 = item.Variable2.trim(); 
-    var1[item.Variable1] = true;
-    var2[item.Variable2] = true;      
-    item.pendiente =+ item.pendiente;
-    item.intercepto =+ item.intercepto;
-    item.pearson =+ item.pearson;
-  });
-  
-  comparadores = Object.keys(var1);
-  variables = Object.keys(var2);
-
-  data.forEach(function (item) {
-    for (var i = 0; i < comparadores.length; i++) {
-      if (comparadores[i] === item.Variable1) {
-        item.posY = i;        
-      }
-    }
-    for (var i = 0; i < variables.length; i++) {
-      if (variables[i] === item.Variable2) {
-        item.posX = i;
-      }
-    }
-  });
-
-  correlation = data;
-  createMatrix(undefined, correlation, svg1, x1, y1, z1);
+  // data.forEach(function (value) {
+  //   value.
+  // })
 });
 
 $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){  
