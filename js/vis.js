@@ -12,7 +12,7 @@ var n = 200, // total number of nodes
     m = 3; // number of distinct clusters
 
 var color = d3.scale.category10()
-    .range(["#66bd63","#ffbfff","#f46d43"])
+    .range(["#f46d43","#ffbfff","#66bd63"])
     .domain([0,1,2]);
 
 // The largest node for each cluster.
