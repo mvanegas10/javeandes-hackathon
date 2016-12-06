@@ -274,18 +274,21 @@ d3.csv("https://mvanegas10.github.io/javeandes-hackathon/docs/indicadores.csv", 
     console.err(err);    
   return;
   }
-
-  // data.forEach(function (value) {
-  //   value.
-  // })
+  
+  indicadores= data;
 });
 
 $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",function(colombia){  
   colombia.features.forEach(function (d) {
-
-
-    d.properties.indicator = Math.random();
+    indicadores.forEach(function (value) {
+      value.valor = + value.valor;
+      if (d.properties.NOMBRE_DPT.toLowerCase() === value.departamento.toLowerCase()) {
+        d.properties.indicator = value.valor;
+      }
+    })
   })
+
+  console.log(colombia);
   var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.5);
     map.dragging.disable();
     map.scrollWheelZoom.disable();
@@ -361,15 +364,15 @@ function createNodes(data) {
 } 
 
 function setColor(indicator) {
-  if (indicator < 0.1) return "#fff7f3";  
-  else if (indicator < 0.2) return "#fde0dd";  
-  else if (indicator < 0.3) return "#fcc5c0";  
-  else if (indicator < 0.4) return "#fa9fb5";  
-  else if (indicator < 0.5) return "#f768a1";  
-  else if (indicator < 0.6) return "#dd3497";  
-  else if (indicator < 0.7) return "#ae017e";  
-  else if (indicator < 0.8) return "#7a0177";  
-  else if (indicator < 0.9) return "#49006a";  
+  if (indicator < 1.5) return "#fff7f3";  
+  else if (indicator < 3) return "#fde0dd";  
+  else if (indicator < 4.5) return "#fcc5c0";  
+  else if (indicator < 6) return "#fa9fb5";  
+  else if (indicator < 7.5) return "#f768a1";  
+  else if (indicator < 9) return "#dd3497";  
+  else if (indicator < 10.5) return "#ae017e";  
+  else if (indicator < 12) return "#7a0177";  
+  else if (indicator < 13.5) return "#49006a";  
 }
 
 info.onAdd = function(map) {
