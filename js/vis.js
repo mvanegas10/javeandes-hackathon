@@ -12,68 +12,30 @@ var n = 200, // total number of nodes
     m = 3; // number of distinct clusters
 
 var color = d3.scale.category10()
-    .range(["#66bd63","#ffffbf","#f46d43"])
+    .range(["#66bd63","#ffbfff","#f46d43"])
     .domain([0,1,2]);
 
 // The largest node for each cluster.
 var clusters = new Array(m);
 
 var tweets = [
-  {"text":"grande0","value":0},
-  {"text":"pequeño0","value":0},
-  {"text":"grande3","value":0},
-  {"text":"pequeño3","value":0},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"grande2","value":0},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"grande1","value":0.5},
-  {"text":"pequeño1","value":0},
-  {"text":"grande0","value":0},
-  {"text":"pequeño0","value":0},
-  {"text":"grande3","value":0},
-  {"text":"pequeño3","value":0},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"grande2","value":0},
-  {"text":"grande1","value":0.5},
-  {"text":"pequeño1","value":0},
-  {"text":"grande0","value":0},
-  {"text":"pequeño0","value":0},
-  {"text":"grande3","value":0},
-  {"text":"pequeño3","value":0},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"grande2","value":0},
-  {"text":"grande1","value":0.5},
-  {"text":"pequeño1","value":0},
-  {"text":"grande0","value":0},
-  {"text":"pequeño0","value":0},
-  {"text":"grande3","value":0},
-  {"text":"pequeño3","value":0},
-  {"text":"pequeño2","value":-0.3},
-  {"text":"grande2","value":0},
-  {"text":"grande1","value":0.5},
-  {"text":"pequeño1","value":0}      
+  {"text":"grande0","score":0},
+  {"text":"pequeño0","score":0},
+  {"text":"grande3","score":0},
+  {"text":"pequeño3","score":0},
+  {"text":"pequeño2","score":0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"pequeño2","score":0.3},
+  {"text":"pequeño2","score":-0.3},
+  {"text":"grande2","score":0}
 ];
 
 createForceChart(createNodes(tweets));
@@ -84,7 +46,6 @@ function createForceChart(nodes) {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      console.log(d)
       return "<span>" + d.text + "</span>";
     })
 
@@ -183,73 +144,45 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
   //           }
   //         }
   //       })
-  //   });           
+    // });           
   
   var map = L.map('map', { zoomControl:false }).setView([4, -73.5], 5.5);
     map.dragging.disable();
     map.scrollWheelZoom.disable();
-  info.addTo(map);
+    info.addTo(map);
+
   var layer = L.geoJson(colombia, {
     clickable: true,
     style: function(feature) {
-          return {
-            stroke: true,
-            color: "#0d174e",
-            weight: 1,
-            fill: true,
-            fillColor: "green",
-            fillOpacity: 1
-          };
+      return {
+        stroke: true,
+        color: "#0d174e",
+        weight: 1,
+        fill: true,
+        fillColor: setColor(),
+        fillOpacity: 1
+      };
     },
     onEachFeature: function (feature, layer) {
       layer.on({
-        click: function(e) {
-          console.log(e); 
-          // var depto = e.target.feature.properties.indicators.Departamento;
-          // var dataMatrix = departamentos_results.filter(function (d) {
-          //   if (d.Departamento === depto) return d;
-          // });
-          // createMatrix(depto, dataMatrix, svg1, x1, y1, z1);
-          // updateLabels(svg1,[]);
-          // var newData = scatterplot.filter(function (e) {
-          //   if (e.Departamento === depto) return e;
-          // });
-          // createScatterplot(newData, "PorcentajeNo", "PorcentajeOscarIvanZuluagaSegundaVuelta", x2, y2, z2);
-          // console.log(e);
-          },
-      //   mouseover: function (e) { 
-      //   },
-      //   mouseout: function (e) { info.update();},
-      // });     
-      })
+        mouseover: function(d) {console.log("inside " + d)},
+        mouseout: function(d) {console.log("outside " + d)},
+        click: function(d) {console.log("click " + d)}
+      });
     }
-  });
-  layer.addTo(map);
-  var legend = L.control({
-    position: 'bottomright'
-  });
-    // legend.onAdd = function() {
-    //   var div = L.DomUtil.create('div', 'legend'),
-    //     values = [1,0.5,0,-0.5,-1];
-    //     labels = ["Sí","","Empate","","No"];
-    //   div.innerHTML += 'Resultado plebiscito<br>';
-    //   for (var i = 0; i < values.length; i++) {
-    //     div.innerHTML +=
-    //       '<i style="background:' + "black" + '"></i> '+ labels[i] + '<br>';
-    //   }
-    //   return div;
-    // };
-  legend.addTo(map);
-  }
-);
+  }).addTo(map);
+});
 
 // Get to get the topic
 function sendTopic(type) {
   console.log("Ask for " + type);
   $.ajax({
-    type: "GET",
-    url: "http://pyjaveandes.mybluemix.net/get_tweets/" + type
-    }).then(function(data) {
+    type: "POST",
+    data: "{\"word\":\"" + type + "\"}",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    url: "http://pyjaveandes.mybluemix.net/get_tweets"
+    }).then(function(data) {  
       console.log(data);
       createForceChart(createNodes(data.result));
       // createForceChart(createNodes(tweets));
@@ -259,8 +192,9 @@ function sendTopic(type) {
 function createNodes(data) {
   var nodes = [];
   data.forEach(function(dat) {
-    var i = (dat.value < 0)? 0: (dat.value === 0)? 1: 2,
-      r = ((dat.value) === 0)? 7: Math.sqrt((i + 1) / m * -Math.log(Math.abs(dat.value))) * maxRadius + 7,
+    dat.score = + dat.score;
+    var i = (dat.score < 0)? 0: (dat.score === 0)? 1: 2,
+      r = ((dat.score) === 0)? 7: Math.sqrt((i + 1) / m * -Math.log(Math.abs(dat.score))) * maxRadius + 7,
       d = {
         text: dat.text,
         cluster: i,
@@ -271,8 +205,37 @@ function createNodes(data) {
     if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
     nodes.push(d);
   });
+  d3.select("#forceChart").html("");
+  d3.select("#forceChart").selectAll("*").remove();  
+  console.log(nodes);
   return nodes;
 } 
+
+function setColor() {
+  var rnd = Math.random();
+
+  var color2 = d3.scale.category20()
+    .range(["#b58949",
+"#fbbd13",
+"#6b4c33",
+"#f47d0d",
+"#a28b6e",
+"#7f6807",
+"#e7a941",
+"#9b6212",
+"#dab953",
+"#b5753e",
+"#ba8d1e",
+"#d2ae75",
+"#c47f2a",
+"#a18623",
+"#de9e63",
+"#a27521",
+"#e8aa59",
+"#bf8f3b"]);
+    console.log(color2(Math.floor(rnd*40)))
+    return color2(Math.floor(rnd*40));
+}
 
 info.onAdd = function(map) {
     this._div = L.DomUtil.create('div', 'info'); // --> info refers to the CSS style to apply to the new object
