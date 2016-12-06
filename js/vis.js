@@ -28,22 +28,6 @@ var tweets = [
   {"texto":"pequeño1","valor":-0.7},
 ];
 
-function createNodes(data) {
-  var nodes = d3.range(data.length).map(function(i) {
-    var i = (data[i].valor >= 0)? 1:0,
-      r = Math.sqrt((i + 1) / m * -Math.log(Math.abs(data[i].valor))) * maxRadius,
-      d = {
-        cluster: i,
-        radius: r,
-        x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
-        y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
-      };
-    if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-    return d; 
-  });
-  return nodes;
-} 
-
 function createForceChart(nodes) {
   console.log(nodes);
   var force = d3.layout.force()
@@ -156,7 +140,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
             fillColor: "green",
             fillOpacity: 1
           };
-      },
+    },
     onEachFeature: function (feature, layer) {
       layer.on({
         click: function(e) {
@@ -177,12 +161,13 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
       //   },
       //   mouseout: function (e) { info.update();},
       // });     
-    })
-    });
-    layer.addTo(map);
-    var legend = L.control({
-      position: 'bottomright'
-    });
+      })
+    }
+  });
+  layer.addTo(map);
+  var legend = L.control({
+    position: 'bottomright'
+  });
     // legend.onAdd = function() {
     //   var div = L.DomUtil.create('div', 'legend'),
     //     values = [1,0.5,0,-0.5,-1];
@@ -201,15 +186,30 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
 // Get to get the topic
 function sendTopic(type) {
   console.log("Ask for " + type);
-  createForceChart(createNodes(tweets));
   $.ajax({
     type: "GET",
-    url: "http://pyjaveandes.mybluemix.net/\"" + type + "\""
+    url: "http://pyjaveandes.mybluemix.net/get_tweets/" + type
     }).then(function(data) {
       console.log(data);
-      createForceChart(createNodes(data));
+      createForceChart(createNodes(data.result));
   });
 }
+
+function createNodes(data) {
+  var nodes = d3.range(data.length).map(function(i) {
+    var i = (data[i].value  >= 0)? 1:0,
+      r = Math.sqrt((i + 1) / m * -Math.log(Math.abs(data[i].value))) * maxRadius,
+      d = {
+        cluster: i,
+        radius: r,
+        x: Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
+        y: Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random()
+      };
+    if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+    return d; 
+  });
+  return nodes;
+} 
 
 info.onAdd = function(map) {
     this._div = L.DomUtil.create('div', 'info'); // --> info refers to the CSS style to apply to the new object
