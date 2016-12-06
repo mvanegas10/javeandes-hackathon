@@ -5,7 +5,7 @@ var width = 650,
     maxRadius = 12;
 
 var info = L.control({
-      position: 'topright'
+      position: 'topleft'
     });    
 
 var n = 200, // total number of nodes
@@ -49,7 +49,7 @@ var words = [
 ]
 
 var results = [
-  {"id":"tweets",
+  {"id":"Salud",
   "objeto":[
     {"nombre":"edad","valor":0.29},
     {"nombre":"peso","valor":0.23},
@@ -90,28 +90,22 @@ var results = [
     {"nombre":"trigricéridos altos","valor":0.11}]
   }];
 
-var tweets = [
-  {"text":"grande0","score":0},
-  {"text":"pequeño0","score":0},
-  {"text":"grande3","score":0},
-  {"text":"pequeño3","score":0},
+var Salud = [
+  {"text":"Hoy el presidente de nuestro instituto @joelemendoza visitó el diario @elimpulsocom para informar acerca de los programas sociales.","score":0},
+  {"text":"En resumen, ganó el lobby y perdió la salud pública.","score":0},
+  {"text":"Enlazo nuevamente esta entrevista: “Esta semana hubo muchos lobistas en el Congreso”: ministro de Salud ","score":0},
   {"text":"pequeño2","score":0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"pequeño2","score":0.3},
-  {"text":"pequeño2","score":-0.3},
-  {"text":"grande2","score":0}
+  {"text":"La salud pública es en los hospitales, no en obras sociales públicas que todos sabemos, son para corrupción. No empeoremos, cambiemos.","score":-0.3},
+  {"text":"Les recuerdo que Garavito saldrá en unos 7 años y eso q violó y asesinó a 192 niños. Entonces, de qué hablamos?Es rasgada de vestiduras y ya","score":-0.3},
+  {"text":"Lástima que indignación nacional serà como la espuma.Vendrán los defensores de los violadores asesinos a decir q merecen segunda oportunidad","score":-0.3},
+  {"text":"Pide Santos:La más pronta y la más severa justicia para asesino de niña.No decía q eso es justicia vengativa?Que pedir cárcel es retrógado","score":-0.3},
+  {"text":"Buenos días. Que tengan un excelente martes.","score":0.3},
+  {"text":"Si tienes dudas acerca de tu #SaludSexual acude a tu Unidad de #Salud más cercana e infórmate, ¡no te quedes con preguntas! ","score":0.3},
+  {"text":"Realidad sobre ciertos congresistas que sus neuronas no dan para mas. Felicitaciones @carlintovar @larepublica_pe","score":0.3},
 ];
 
-createForceChart(createNodes(tweets));
-createBarChart("tweets");
+createForceChart(createNodes(Salud));
+createBarChart("Salud");
 
 function createForceChart(nodes) {
   var tip = d3.tip()
@@ -286,6 +280,7 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
         d.properties.indicator = value.valor;
       }
       else if (d.properties.NOMBRE_DPT.toLowerCase() == "CAQUETA") d.properties.indicator = 7.4;
+      else if (value.valor == "CAQUETA") d.properties.indicator = 7.4;
     })
   })
 
@@ -310,7 +305,8 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
     onEachFeature: function (feature, layer) {
       layer.on({
         mouseover: function(d) {
-          info.update({"Departamento": d.target.feature.properties.NOMBRE_DPT, "Indicador": Math.round(d.target.feature.properties.indicator*100)/100});
+          var ind = (d.target.feature.properties.indicator === undefined)? 7.4:d.target.feature.properties.indicator;
+          info.update({"Departamento": d.target.feature.properties.NOMBRE_DPT, "Porcentaje": ind + "%"});
         },
         mouseout: function(d) {
           info.update({"":""});
@@ -322,9 +318,9 @@ $.getJSON("https://mvanegas10.github.io/javeandes-hackathon/docs/colombia.json",
 
 // Get to get the topic
 function sendTopic(type) {
-  if (type === "tweets") {
-    createForceChart(createNodes(tweets));
-    createBarChart("tweets");
+  if (type === "Salud") {
+    createForceChart(createNodes(Salud));
+    createBarChart("Salud");
   }
   else {
     console.log("Ask for " + type);
@@ -365,6 +361,8 @@ function createNodes(data) {
 } 
 
 function setColor(indicator) {
+  indicator = (indicator === undefined)? 7.4:indicator;
+
   if (indicator < 1.5) return "#fff7f3";  
   else if (indicator < 3) return "#fde0dd";  
   else if (indicator < 4.5) return "#fcc5c0";  
@@ -400,9 +398,9 @@ info.update = function(props) {
 
   app.controller('selectionController', function(){
     var _this = this;
-    _this.selection = "tweets";
+    _this.selection = "Salud";
     _this.options = [
-      {"id":0,"name":"tweets"},
+      {"id":0,"name":"Salud"},
       {"id":0,"name":"Edad"},
       {"id":1,"name":"Peso"},
       {"id":2,"name":"Ejercicio"},
